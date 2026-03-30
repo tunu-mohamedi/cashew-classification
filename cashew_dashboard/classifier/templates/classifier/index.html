@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cashew Leaf Disease Classifier</title>
+    <style>
+        body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: #f4f7f6; margin: 0; }
+        .container { background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; max-width: 500px; width: 100%; }
+        h1 { color: #2c3e50; }
+        input[type="file"] { margin: 20px 0; }
+        button { background-color: #27ae60; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 4px; cursor: pointer; }
+        button:hover { background-color: #2ecc71; }
+        .result { margin-top: 20px; padding: 15px; border-radius: 4px; background-color: #e8f8f5; border: 1px solid #d1f2eb; }
+        .error { color: #e74c3c; font-weight: bold; margin-top: 15px; }
+        img.preview { max-width: 100%; height: auto; margin-top: 15px; border-radius: 4px; }
+        .disease-name { font-size: 24px; font-weight: bold; color: #16a085; text-transform: capitalize; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Cashew Leaf Scanner</h1>
+    <p>Upload a picture of a cashew nut leaf to detect diseases.</p>
+    
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="upload" accept="image/*" required>
+        <button type="submit">Analyze Image</button>
+    </form>
+
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+
+    {% if predicted_class %}
+        <div class="result">
+            <p>Detection Result:</p>
+            <div class="disease-name">{{ predicted_class }}</div>
+            <p>Confidence: <strong>{{ confidence }}%</strong></p>
+        </div>
+        <img src="{{ url }}" class="preview" alt="Uploaded Image">
+    {% endif %}
+</div>
+
+</body>
+</html>
