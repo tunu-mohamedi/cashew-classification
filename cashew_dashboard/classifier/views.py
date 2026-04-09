@@ -40,13 +40,19 @@ def index(request):
             predictions = model.predict(img_array)
             # The training used SparseCategoricalCrossentropy(from_logits=True)
             score = tf.nn.softmax(predictions[0])
-            
-            predicted_class = class_names[np.argmax(score)]
+            predicted_index = np.argmax(score)
+            predicted_class = class_names[predicted_index]
             confidence = round(float(100 * np.max(score)), 2)
 
+            threshold = 70.0  # Confidence threshold (percent)
             context['url'] = url
-            context['predicted_class'] = predicted_class
             context['confidence'] = confidence
+            if confidence < threshold:
+                context['predicted_class'] = 'Not a cashew or cashew leaf'
+                context['flagged'] = True
+            else:
+                context['predicted_class'] = predicted_class
+                context['flagged'] = False
         except Exception as e:
             context['error'] = f"Prediction failed: {str(e)}"
 
